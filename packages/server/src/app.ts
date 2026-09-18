@@ -84,9 +84,22 @@ export async function buildApp({ config, db }: BuildAppOptions): Promise<Fastify
             connectSrc: ["'self'"],
             objectSrc: ["'none'"],
             frameAncestors: ["'none'"],
+            // Helmet enables upgrade-insecure-requests by default, which
+            // breaks the documented plain-HTTP deployment: on any origin that
+            // is not "potentially trustworthy" (i.e. anything but localhost),
+            // the browser rewrites same-origin subresource requests to
+            // https://, nothing answers on TLS, and the page renders blank.
+            // It buys nothing when TLS does terminate at a proxy either --
+            // the document is already https, so relative URLs resolve to
+            // https on their own.
+            upgradeInsecureRequests: null,
           },
         }
       : false,
+    // Only meaningful over TLS, and browsers ignore it on a plain-HTTP
+    // response. Sending it anyway risks pinning the whole host the first time
+    // anything on it is served over https.
+    hsts: config.COOKIE_SECURE ? { maxAge: 31_536_000, includeSubDomains: true } : false,
     crossOriginEmbedderPolicy: false,
   });
 
