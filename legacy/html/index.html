@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title>Days Since</title>
+	<meta name="description" content="Incident Board">
+
+	<script src="/js/jquery-3.3.1.min.js"></script>
+    <script src="/js/moment.js"></script>
+	<script src="/js/utility-1.0.0.js"></script>
+	<script>
+	function refresh() {
+		
+		$.getJSON("/data/json.php", function(data) {
+			
+			var html = '<div class="title">Time Passed Since</div>';
+			now = new Date();
+					
+			count = 0;
+		
+			$.each(data, function(key, value) {
+				
+    			/* Fix for Safari browsers on macOS and iOS devices */
+                datetime = value.datetime.replace(' ', 'T');
+
+				countTo = new Date(datetime);
+				difference = now - countTo;
+
+				days = Math.floor(difference/(60*60*1000*24)*1).toString().padStart(3,"0");
+				hours = Math.floor((difference%(60*60*1000*24))/(60*60*1000)*1).toString().padStart(2,"0");
+				minutes = Math.floor(((difference%(60*60*1000*24))%(60*60*1000))/(60*1000) *1).toString().padStart(2,"0");
+	
+				html += '<div class="desc">' + value.description + '</div>';
+				html += '<div class="time"><b>' + days + '</b> Days <b>' + hours + '</b> Hours <b>' + minutes + '</b> Minutes</div>';
+				
+				if (count == 0)
+				{
+					$('#latest').html('<b>Latest</b> - ' + value.description + ' - <b>' + days + '</b> Days <b>' + hours + '</b> Hours <b>' + minutes + '</b> Minutes Ago');
+				}
+									
+				count++; 	
+			});
+				
+			$('#counters').html(html);
+
+		});
+		
+	}
+		
+	refresh();
+	setInterval( refresh, 30000);
+	</script>
+	
+	<link rel="stylesheet" href="/css/main.css">
+
+</head>
+
+<body>
+	<div class="wrapper" id="counters">
+  	</div>
+  	<div class="footer">
+    	<div class="highlight" id="latest">
+    	</div>
+    	<div class="powered-by">
+      	Powered By Espresso Walnut Browies 1.99
+    	</div>
+  	</div>
+</body>
+</html>

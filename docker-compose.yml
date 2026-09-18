@@ -1,0 +1,34 @@
+# Default stack: one container, SQLite on a named volume.
+#   docker compose up --build
+#
+# For Postgres instead, layer the override file on top:
+#   docker compose -f docker-compose.yml -f docker-compose.postgres.yml up --build
+
+name: sincewhen
+
+services:
+  app:
+    build:
+      context: .
+      target: runtime
+    image: sincewhen:latest
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:3000"
+    environment:
+      TZ: ${TZ:-America/New_York}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      PAGE_TITLE: ${PAGE_TITLE:-Time Passed Since}
+      DB_CLIENT: sqlite
+      SQLITE_PATH: /data/sincewhen.db
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env (min 32 chars)}
+      SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-12}
+      API_TOKENS: ${API_TOKENS:-}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
+    volumes:
+      - sincewhen-data:/data
+
+volumes:
+  sincewhen-data:

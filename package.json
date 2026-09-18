@@ -1,0 +1,31 @@
+{
+  "name": "sincewhen",
+  "version": "2.0.0",
+  "private": true,
+  "description": "The IT wall of shame: a big screen counting how long since each thing last went wrong",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "pnpm --parallel --filter \"./packages/*\" dev",
+    "build": "pnpm --filter @sincewhen/shared build && pnpm --filter @sincewhen/server build && pnpm --filter @sincewhen/web build",
+    "start": "pnpm --filter @sincewhen/server start",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "docker:up": "docker compose up --build",
+    "docker:up:postgres": "docker compose -f docker-compose.yml -f docker-compose.postgres.yml up --build",
+    "docker:down": "docker compose -f docker-compose.yml -f docker-compose.postgres.yml down"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "packageManager": "pnpm@10.18.0",
+  "license": "MIT",
+  "author": "Dennis Koch",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/denniskoch/sincewhen.git"
+  },
+  "homepage": "https://github.com/denniskoch/sincewhen"
+}

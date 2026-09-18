@@ -1,0 +1,16 @@
+**/node_modules
+**/dist
+**/.turbo
+**/*.tsbuildinfo
+.git
+.gitignore
+legacy
+data
+*.db
+.env
+.env.*
+!.env.example
+**/*.log
+.DS_Store
+docker-compose*.yml
+README.md

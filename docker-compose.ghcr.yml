@@ -1,0 +1,36 @@
+# Deployment stack: pulls the published image instead of building it.
+#
+#   curl -O https://raw.githubusercontent.com/denniskoch/sincewhen/main/docker-compose.ghcr.yml
+#   curl -o .env https://raw.githubusercontent.com/denniskoch/sincewhen/main/.env.example
+#   # edit .env, then:
+#   docker compose -f docker-compose.ghcr.yml up -d
+#
+# This file is self-contained: it needs no source checkout. Add
+# docker-compose.postgres.yml on top of it to swap SQLite for Postgres.
+
+name: sincewhen
+
+services:
+  app:
+    image: ghcr.io/denniskoch/sincewhen:${SINCEWHEN_TAG:-latest}
+    pull_policy: always
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:3000"
+    environment:
+      TZ: ${TZ:-America/New_York}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      PAGE_TITLE: ${PAGE_TITLE:-Time Passed Since}
+      DB_CLIENT: sqlite
+      SQLITE_PATH: /data/sincewhen.db
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:?set ADMIN_PASSWORD in .env}
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env (min 32 chars)}
+      SESSION_TTL_HOURS: ${SESSION_TTL_HOURS:-12}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+      SEED_DEMO_DATA: ${SEED_DEMO_DATA:-false}
+      API_TOKENS: ${API_TOKENS:-}
+    volumes:
+      - sincewhen-data:/data
+
+volumes:
+  sincewhen-data:

@@ -1,0 +1,83 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100vh;
+  /*background: radial-gradient(circle at top center, #333 0%, #111 100%);*/
+  overflow: hidden;
+}
+
+body {
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),url("/images/background.jpg");
+}
+
+.wrapper {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: 800px;
+  margin-left: -400px;
+  font: 300 30px/1 'Open Sans Condensed', sans-serif;
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  animation: 90s credits linear infinite;
+}
+
+.title {
+  margin-bottom: 50px;
+  font-size: 75px;
+}
+
+.desc {
+  margin-bottom: 5px;
+  font-size: 35px;
+}
+
+.time {
+  margin-bottom: 50px;
+  font-size: 55px;
+}
+
+.time b {
+  color:crimson;
+  font-weight: normal;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  background: black;
+  display: block;
+  padding: 20px;
+}
+
+.highlight {
+  text-align: right;
+  text-transform: uppercase;
+  font: 300 30px/1 'Open Sans Condensed', sans-serif;
+  color: #fff;
+}
+
+.highlight b {
+  color:crimson;
+  font-weight: normal;  
+}
+
+.powered-by {
+  text-align: right;
+  text-transform: uppercase;
+  font: 300 14px/1 'Open Sans Condensed', sans-serif;
+  color: #cc9900;
+}
+
+@keyframes credits {
+    0% { top:  100%; }
+  100% { top: -200%; }
+}
