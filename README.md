@@ -34,8 +34,14 @@ curl -O https://raw.githubusercontent.com/denniskoch/sincewhen/main/docker-compo
 curl -o .env https://raw.githubusercontent.com/denniskoch/sincewhen/main/.env.example
 ```
 
-Edit `.env` — at minimum set `ADMIN_PASSWORD`, and generate a secret with
-`openssl rand -base64 32` for `SESSION_SECRET`. Then:
+Edit `.env`. At minimum set `ADMIN_PASSWORD`, and generate `SESSION_SECRET`:
+
+```bash
+openssl rand -base64 32
+```
+
+Paste the whole output, including the trailing `=` — it is part of the value,
+and the parser splits on the first `=` only. Then:
 
 ```bash
 docker compose -f docker-compose.ghcr.yml up -d
@@ -187,16 +193,27 @@ Two levels of access:
 
 ## Recording incidents from other tools
 
-Set `API_TOKENS` and external tools can trip a counter without a browser:
+Set `API_TOKENS` and external tools can trip a counter without a browser.
+Generate the tokens in a shell:
 
 ```bash
-API_TOKENS=nagios:$(openssl rand -hex 24),ci:$(openssl rand -hex 24)
+openssl rand -hex 24    # one per tool
 ```
 
-Each entry is `label:token`; the label is what shows up in the log, so you can
-tell which tool reported an incident. Tokens must be at least 16 characters or
-the server refuses to start. Leave `API_TOKENS` unset and machine access is off
-entirely.
+then paste the results into `.env`, as `label:token` pairs:
+
+```dotenv
+API_TOKENS=nagios:1ed2c59397efd829da5922d5e661d0499275a026c4a0b1c0,ci:9f3b...
+```
+
+> `.env` is **not** a shell script. Writing `$(openssl rand -hex 24)` in it
+> stores that text literally rather than running it — and the result is long
+> enough to pass validation, so you would get a published string as your token
+> and no error. Always run the command yourself and paste the output.
+
+The label is what shows up in the log, so you can tell which tool reported an
+incident. Tokens must be at least 16 characters or the server refuses to start.
+Leave `API_TOKENS` unset and machine access is off entirely.
 
 Counters are addressed by `name` — the stable key a script can hard-code —
 rather than by numeric id:
